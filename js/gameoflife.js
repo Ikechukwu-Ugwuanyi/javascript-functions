@@ -24,7 +24,7 @@ const corners = (state = []) => {
   }
 
   const xs = state.map(([x, _]) => x);
-  const ys = state.map(([y, _]) => y);
+  const ys = state.map(([_, y]) => y);
   return {
     topRight: [Math.max(...xs), Math.max(...ys)],
     bottomLeft: [Math.min(...xs), Math.min(...ys)]
@@ -36,29 +36,29 @@ const printCells = (state) => {
   let accumulator = "";
   for (let y = topRight[1]; y >= bottomLeft[1]; y--) {
     let row = [];
-    for (let x = bottomLeft[1]; x <= topRight[1]; x++) {
+    for (let x = bottomLeft[0]; x <= topRight[0]; x++) {
       row.push(printCell([x,y], state));
     }
-    accumulator += roow.join(" ") + "\n";
+    accumulator += row.join(" ") + "\n";
   }
   return accumulator; 
 };
 
 const getNeighborsOf = ([x, y]) => [
-  [x - 1, x + 1], [x, y + 1], [x + 1, y + 1],
+  [x - 1, y + 1], [x, y + 1], [x + 1, y + 1],
   [x - 1, y],                 [x + 1, y],
   [x - 1, y - 1], [x, y - 1], [x + 1, y - 1]
 ];
-
+ 
 const getLivingNeighbors = (cell, state) => {
-  return getNeigboursOf(cell).filter((n) => contains.bind(state)(n));
+  return getNeighborsOf(cell).filter((n) => contains.bind(state)(n));
 };
 
 const willBeAlive = (cell, state) => {
-  const livinNeigbours = getLivingNeigbours(cell, state);
+  const livingNeighbors = getLivingNeighbors(cell, state);
 
-  return (livingNeigbours.Length === 3 || 
-  (contains.call(state, cell) && livingNeigbours.length === 2)
+  return (livingNeighbors.length === 3 || 
+  (contains.call(state, cell) && livingNeighbors.length === 2)
   );
 };
 
@@ -67,7 +67,7 @@ const calculateNext = (state) => {
   let result = [];
   for (let y = topRight[1] + 1; y >= bottomLeft[1] - 1; y--) {
     for (let x = bottomLeft[0] - 1; x <= topRight[0] + 1; x ++) {
-      result = result.concat(willBeAlive([x, y], state) ? [x, y] : []);
+      result = result.concat(willBeAlive([x, y], state) ? [[x, y]] : []);
     }
   }
   return result;
