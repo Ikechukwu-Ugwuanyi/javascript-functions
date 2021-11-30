@@ -8,23 +8,23 @@ function same([x, y], [j, k]) {
 
 // The game state to search for `cell` is passed as the `this` value of the function.
 function contains(cell) {
-  return this.some((c) => (c, cell));
+  return this.some((c) => same(c, cell));
 }
 
 const printCell = (cell, state) => {
-  return contains.call(state, cell) ? 'u25A3':'u25A2';
+  return contains.call(state, cell) ? "\u25A3" : "\u25A2";
 };
 
 const corners = (state = []) => {
-  if(state.length === 0) {
+  if (state.length === 0) {
     return {
       topRight: [0, 0],
       bottomLeft: [0, 0]
     }
   }
 
-  const xs = state.map(([x, _]) => xs);
-  const ys = state.map(([y, _]) => ys);
+  const xs = state.map(([x, _]) => x);
+  const ys = state.map(([y, _]) => y);
   return {
     topRight: [Math.max(...xs), Math.max(...ys)],
     bottomLeft: [Math.min(...xs), Math.min(...ys)]
